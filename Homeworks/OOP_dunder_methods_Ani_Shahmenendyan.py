@@ -105,24 +105,21 @@ class Colors:
 
     @r.setter
     def r(self, r):
-        if r in range(0, 256):
+        if  type(r) == Colors and r in range(0, 256):
             self.__red = r
-        else:
-            raise ValueError
+        raise TypeError
 
     @g.setter
     def g(self, g):
-        if g in range(0, 256):
+        if type(g) == Colors and g in range(0, 256):
             self.__green = g
-        else:
-            raise ValueError
+        raise TypeError
 
     @b.setter
     def b(self, b):
-        if b in range(0, 256):
+        if type(b) == Colors and b in range(0, 256):
             self.__blue = b
-        else:
-            raise ValueError
+        raise TypeError
 
     # def __add__(self, other): # սա չի աշխատում
     #     if type(other) == Colors:
