@@ -3,8 +3,9 @@
 
 class Integer:
     def __init__(self, n):
-        if type(n) == int:
-            self._n = n
+        if type(n) != int:
+            raise TypeError ('instances must be int')
+        self._n = n
 
     def get_n(self):
         return self._n
@@ -32,7 +33,7 @@ class Integer:
         if type(other) == Integer and other.get_n() != 0:
             return self._n / other.get_n()
         else:
-            return Inf
+            return Inf()
 
     def __eq__(self, other):
         return self._n == other._n
@@ -56,14 +57,13 @@ class Integer:
         return f'{self._n}'
 
     def __bool__(self):
-        if self._n != 0:
-            return True
-        else:
-            return False
+        return True if self._n != 0 else False
+
+
 
 
 class Inf(int):
-    def __init__(self, m):
+    def __init__(self, m = 0):
         super().__init__(m)
 
 
@@ -85,61 +85,62 @@ print('------------------')
 class Colors:
     def __init__(self, r, g, b):
         if r in range(256) and g in range(256) and b in range(256):
-            self.__red = r
-            self.__green = g
-            self.__blue = b
+            self.red = r
+            self.green = g
+            self.blue = b
         else:
             raise ValueError
 
     @property
     def r(self):
-        return self.__red
+        return self.red
 
     @property
     def g(self):
-        return self.__green
+        return self.green
 
     @property
     def b(self):
-        return self.__blue
+        return self.blue
 
     @r.setter
     def r(self, r):
-        if  type(r) == Colors and r in range(0, 256):
-            self.__red = r
+        self.__red = self.color_range(r)
         raise TypeError
 
     @g.setter
     def g(self, g):
-        if type(g) == Colors and g in range(0, 256):
-            self.__green = g
-        raise TypeError
+        self.__green = self.color_range(g)
+        raise ValueError
 
     @b.setter
     def b(self, b):
-        if type(b) == Colors and b in range(0, 256):
-            self.__blue = b
-        raise TypeError
+        self.__blue = self.color_range(b)
 
-    # def __add__(self, other): # սա չի աշխատում
-    #     if type(other) == Colors:
-    #         return Colors(self.__red + other.r(), self.__green + other.g(), self.__blue + other.b())
+    @staticmethod
+    def color_range(v):
+        return max(0, min(v, 255))
+
+    def __add__(self, other): # սա չի աշխատում
+        if type(other) == Colors:
+            return Colors(self.r + other.r, self.g + other.g, self.b + other.b)
 
     def rgb_to_hex(self):
-        return f'Red is:{hex(self.__red)},Green is: {hex(self.__green)},Blue is: {self.__blue}'
+        return '{:02x}, {:02x}, {:02x}'.format(self.red, self.green, self.blue)
 
     def __str__(self):
-        return f'Red is: {self.__red} \nGreen is: {self.__green} \nBlue is: {self.__blue}'
+        return f'Red is: {self.red} \nGreen is: {self.green} \nBlue is: {self.blue}'
 
     # def show_my_color(self):
     #     return color_front(f'This is my color: {self.__red}, {self.__green}, {self.__blue})
 
 clr = Colors(0, 220, 1)
-clr2 = Colors(50,0,20)
+clr2 = Colors(50, 0, 20)
 
-# new_clr = Colors(clr + clr2)
-
+new_clr = clr + clr2
+print(new_clr)
 print(clr)
+# print(clr.rgb_to_hex())
 print ('-----------')
-# print(new_clr)
+print(new_clr)
 print('----------------')
