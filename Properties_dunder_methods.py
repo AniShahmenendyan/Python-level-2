@@ -1,21 +1,26 @@
+class UnknownAtom(Exception):
+    def __init__(self, message='There is no atom type'):
+        self.message = message
+
+    def __str__(self):
+        return self.message
+
+
 class Atom:
-    mlc = ['C_carbon', 'N_nitrogen', 'H_hydrogen', 'O_oxygen', 'P_phosphorus']
+    mlc = {'C': 'carbon', 'N': 'nitrogen', 'H': 'hydrogen', 'O': 'oxygen', 'P': 'phosphorus'}
 
     def __init__(self, name):
-        if name in mlc:
+        if name in self.mlc.keys():
             self.name = name
+        else:
+            raise UnknownAtom
 
     def __add__(self, other):
-        if check_molecule(mlc, [self, other]):
-            return Molecule([self, other])
-        raise UnknownAtom('New object must be ')
+        if type(other) == Atom:
+            return Molecule([self.name, other.name])
 
-    @staticmethod
-    def check_molecule(l, vol):
-        for i in range(len(l)):
-            if l[i] == vol:
-                return True
-        return False
+    def __str__(self):
+        return f'Atom: {self.name}'
 
 
 class Molecule:
@@ -24,43 +29,53 @@ class Molecule:
             self.atoms = atoms
 
     def __add__(self, other):
-        if tyoe(other) == Atom:
-            return Molecule()
+        if type(other) == Atom:
+            self.atoms.append(other.name)
+            return self
+
+    def __str__(self):
+        return 'Molecule: ' + '-'.join(self.atoms)
+
+
+# atom1 = Atom('H')
+# atom2 = Atom('H')
+# atom3 = Atom('O')
+# print(atom1)
+# print(atom2)
+#
+# m = atom1 + atom2
+# print(m)
+#
+# m2 = m + atom3
+# print(m2)
 
 
 # PLenght
 
-class Lenght:
-    main_unit = 'm'
+class Length:
     units = {'m': 1, 'km': 1000, 'yard': 1.094, 'mile': 1609.34}
 
-    def __init__(self, u, l):
+    def __init__(self, l, u='m'):
         if type(l) == int or type(l) == float:
             self.unit = u
-            self.lenght = l
-
-    def u_get(self):
-        return self.unit
-
-    def l_get(self):
-        return self.lenght
-
-    def u_set(self):
-        self.unit = u
-
-    def l_set(self):
-        self.lenght = l
+            self.length = l
 
     def __add__(self, other):
-        chek_unit(self.unit)
-        chek_unit(other.u_get())
-        return Lenght(self.lenght + other.u_get(), self.unit)
+        if type(other) != Length:
+            raise TypeError
+        if self.unit == other.unit:
+            return Length(self.length + other.length, self.unit)
+        else:
+            return Length(self.length * Length.units[self.unit] + other.length * Length.units[other.unit])
 
-    @staticmethod
-    def chek_unit(vol):
-        units = {'m': 1, 'km': 1000, 'yard': 1.094, 'mile': 1609.34}
-        for k, v in units:
-            if vol == v:
-                vol = k * vol
+    def __str__(self):
+        return f'{self.length} {self.unit}'
 
-        return vol
+
+l1 = Length(100)
+l2 = Length(200)
+print(l1)
+print(l1 + l2)
+l3 = Length(10, 'km')
+print(l3)
+print(l3 + l1)
