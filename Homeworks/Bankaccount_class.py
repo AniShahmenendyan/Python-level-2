@@ -4,54 +4,63 @@ class BankAccount:
 
 
     def __init__(self, id, name, currency):
-        self.id = id
-        self.name = name
-        self.balance = 0
-        self.currency = currency
+        self._id = id
+        self._name = name
+        self._balance = 0
+        self._currency = currency
 
-    # @property
-    # def id(self):
-    #     return self.__id
-    #
-    # @property
-    # def name(self):
-    #     return self.__name
-    #
-    # @property
-    # def balance(self):
-    #     return self.__balance
-    #
-    # @property
-    # def currency(self):
-    #     return self.__currency
-    #
-    # @id.setter
-    # def id(self, val):
-    #     raise ValueError
-    #
-    # @name.setter
-    # def name(self, val):
-    #     raise ValueError
-    #
-    # @balance.setter
-    # def balance(self, val):
-    #     raise ValueError
-    #
-    # @currency.setter
-    # def currency(self, val):
-    #     raise ValueError
+
+    def get_id(self):
+        return self._id
+
+
+    def get_name(self):
+        return self._name
+
+
+    def get_balance(self):
+        return self._balance
+
+
+    def get_currency(self):
+        return self._currency
+
+
+    def id(self, val):
+        if type(id) != int:
+            raise TypeError
+        else:
+            self._id = val
+
+
+    def name(self, val):
+        if type(val) != str:
+            raise TypeError
+        else:
+            self._name = val
+
+
+    def balance(self, val):
+        self._balance = val
+
+
+    def currency(self, val):
+        if type(val) != str:
+            raise TypeError
+        else:
+            self._currency = val
 
 
     def credit(self, amount):
-        self.balance += amount
-        print(f'{self.name} account balance after crediting is: {self.balance} {self.currency}')
+        self._balance += amount
+        print(f'{self._name} account balance after crediting is: {self._balance} {self._currency}')
 
     def debit(self, amount):
-        if self.balance > amount:
-            self.balance -= amount
-            print(f'{self.name} account balance after debiting is: {self.balance} {self.currency}')
+        if self._balance > amount:
+            self._balance -= amount
+            print(f'{self._name} account balance after debiting is: {self._balance} {self._currency}')
         else:
-            print(f'{self.name} there is no enough money in your account')
+            print(f'{self._name} there is no enough money in your account')
 
     @staticmethod
     def convert(sum1, current_currency, received_currency):
@@ -59,18 +68,19 @@ class BankAccount:
         return with_currency_amount / BankAccount.__rates[received_currency]
 
     def transfer(self, other, amount):
-        if self.balance > amount and self.currency == other.currency:
+        if self._balance > amount and self._currency == other.get_currency():
             self.debit(amount)
             other.credit(amount)
-        elif self.balance > amount and self.currency != other.currency:
+        elif self._balance > amount and self._currency != other.get_currency():
             self.debit(amount)
-            res = BankAccount.convert(amount,self.currency, other.currency)
+            res = BankAccount.convert(amount, self._currency, other.get_currency())
             other.credit(res)
 
 
 
     def __str__(self):
-        return f'{self.name} account balance is {self.balance}'
+        res1 = BankAccount.convert(self._balance,self._currency,'USD')
+        return f'{self._name} account balance is {res1} USD'
 
 
 
@@ -81,11 +91,12 @@ account1.credit(1000)
 account1.credit(1000)
 account2.debit(200)
 account1.transfer(account2,1000)
+# print(str(account1))
 
 class SavingAccount(BankAccount):
     def __init__(self, id, name, currency,interest):
         super().__init__(id, name, currency)
-        self.interest = interest
+        self._interest = interest
 
     def credit(self, amount):
       super().credit(amount)
@@ -95,13 +106,13 @@ class SavingAccount(BankAccount):
         super().debit(amount)
 
     def deposit_after_month(self):
-        a = SavingAccount.daily_interest(self.interest, self.balance)
+        a = SavingAccount.daily_interest(self._interest, self._balance)
         res = int((a * 30) - (a * 10 / 100))
         BankAccount.credit(self, res)
 
     @staticmethod
-    def daily_interest(interest1, summ):
-        result = (summ * interest1 / 100) / 365
+    def daily_interest(interest1, sum1):
+        result = (sum1 * interest1 / 100) / 365
         return result
 
 acc1 = SavingAccount(1234567,'Hayk', 'AMD', 10)
@@ -111,17 +122,17 @@ acc1.deposit_after_month()
 class CurrentAccount(BankAccount):
     def __init__(self, id, name, currency,overdraft_limit):
         super().__init__(id, name, currency)
-        self.overdraft_limit = overdraft_limit
+        self._overdraft_limit = overdraft_limit
 
     def credit(self, amount):
         super().credit(amount)
 
     def debit(self, amount):
-        if amount > self.balance and abs(self.balance - amount) > self.overdraft_limit:
+        if amount > self._balance and abs(self._balance - amount) > self._overdraft_limit:
             print('Exceeding the debit amount to your overdarft limit')
         else:
-            self.balance -= amount
-            print(f'{self.name} account balance is: {self.balance} {self.currency}')
+            self._balance -= amount
+            print(f'{self._name} account balance is: {self._balance} {self._currency}')
 
 
 account_current = CurrentAccount(234578,'David','AMD',50000)
