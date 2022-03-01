@@ -84,7 +84,7 @@ class BankAccount:
 
 
 
-account1 = BankAccount(123456,'Ani', 'AMD')
+account1 = BankAccount(123456,'Ani', 'RUR')
 account2 = BankAccount(12789,'Anna','USD')
 
 account1.credit(1000)
@@ -107,7 +107,7 @@ class SavingAccount(BankAccount):
 
     def deposit_after_month(self):
         a = SavingAccount.daily_interest(self._interest, self._balance)
-        res = int((a * 30) - (a * 10 / 100))
+        res = round((a * 30) - (a * 10 / 100), 2)
         BankAccount.credit(self, res)
 
     @staticmethod
@@ -138,3 +138,54 @@ class CurrentAccount(BankAccount):
 account_current = CurrentAccount(234578,'David','AMD',50000)
 account_current.credit(100000)
 account_current.debit(110000)
+class Person:
+    def __init__(self, name, ssn):
+        if type(ssn) == int:
+            self.ssn = ssn
+        self.name = name
+
+    def __str__(self):
+        return self.name
+
+    def __hash__(self):
+        return self.ssn
+
+p = Person('Tigran', 123456)
+print(p.__hash__())
+print(str(p))
+
+class Bank:
+
+
+
+    def __init__(self,bank_name):
+        self.list_of_account = {}
+        self._bank_name = bank_name
+
+    def __getitem__(self, ssn):
+        return self.list_of_account[ssn]
+
+    def __setitem__(self, ssn, account):
+        if ssn in self.list_of_account.keys():
+            self.list_of_account[ssn].append(account)
+        else:
+            self.list_of_account.update({ssn: [account]})
+
+    # def balance(self, account, balance):
+    #     list_of_balances = {}
+    #     if account in self.list_of_account.values():
+    #        if account not in list_of_balances:
+    #            list_of_balances.update({account: balance})
+    #     print(list_of_balances)
+
+
+
+
+
+
+bank = Bank('converse')
+bank[2345] = '1234-2546'
+bank[7598] = '213-654'
+bank[2345] = '214-564'
+# bank.balance('1234-2546', 1000) # չի աշխատում
+# print(bank.list_of_account)
