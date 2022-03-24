@@ -1,5 +1,5 @@
 class BankAccount:
-    __rates = {'AMD': 1, 'RUR': 6, 'USD': 500, 'EUR': 600}
+    rates = {'AMD': 1, 'RUR': 6, 'USD': 500, 'EUR': 600}
 
 
 
@@ -54,18 +54,21 @@ class BankAccount:
     def credit(self, amount):
         self._balance += amount
         print(f'{self._name} account balance after crediting is: {self._balance} {self._currency}')
+        print('=' * 50)
 
     def debit(self, amount):
         if self._balance > amount:
             self._balance -= amount
             print(f'{self._name} account balance after debiting is: {self._balance} {self._currency}')
+            print('=' * 50)
         else:
             print(f'{self._name} there is no enough money in your account')
+            print('=' * 50)
 
     @staticmethod
     def convert(sum1, current_currency, received_currency):
-        with_currency_amount = sum1 * BankAccount.__rates[current_currency]
-        return with_currency_amount / BankAccount.__rates[received_currency]
+        with_currency_amount = sum1 * BankAccount.rates[current_currency]
+        return round(with_currency_amount / BankAccount.rates[received_currency],2)
 
     def transfer(self, other, amount):
         if self._balance > amount and self._currency == other.get_currency():
@@ -84,6 +87,7 @@ class BankAccount:
 
 
 
+
 account1 = BankAccount(123456,'Ani', 'RUR')
 account2 = BankAccount(12789,'Anna','USD')
 
@@ -91,7 +95,7 @@ account1.credit(1000)
 account1.credit(1000)
 account2.debit(200)
 account1.transfer(account2,1000)
-# print(str(account1))
+
 
 class SavingAccount(BankAccount):
     def __init__(self, id, name, currency,interest):
@@ -115,9 +119,10 @@ class SavingAccount(BankAccount):
         result = (sum1 * interest1 / 100) / 365
         return result
 
-acc1 = SavingAccount(1234567,'Hayk', 'AMD', 10)
-acc1.credit(100000)
-acc1.deposit_after_month()
+# acc1 = SavingAccount(1234567,'Hayk', 'AMD', 10)
+# acc1.credit(100000)
+# acc1.deposit_after_month()
+print('-----------------------------')
 
 class CurrentAccount(BankAccount):
     def __init__(self, id, name, currency,overdraft_limit):
@@ -130,14 +135,17 @@ class CurrentAccount(BankAccount):
     def debit(self, amount):
         if amount > self._balance and abs(self._balance - amount) > self._overdraft_limit:
             print('Exceeding the debit amount to your overdarft limit')
+            print('=' * 50)
         else:
             self._balance -= amount
             print(f'{self._name} account balance is: {self._balance} {self._currency}')
+            print('=' * 50)
 
 
-account_current = CurrentAccount(234578,'David','AMD',50000)
-account_current.credit(100000)
-account_current.debit(110000)
+# account_current = CurrentAccount(234578,'David','AMD',50000)
+# account_current.credit(100000)
+# account_current.debit(110000)
+print('-----------------------------')
 class Person:
     def __init__(self, name, ssn):
         if type(ssn) == int:
@@ -151,41 +159,45 @@ class Person:
         return self.ssn
 
 p = Person('Tigran', 123456)
-print(p.__hash__())
+print(hash(p))
 print(str(p))
 
 class Bank:
+    def __init__(self):
+        self.account_dict = {}
 
 
 
-    def __init__(self,bank_name):
-        self.list_of_account = {}
-        self._bank_name = bank_name
-
-    def __getitem__(self, ssn):
-        return self.list_of_account[ssn]
-
-    def __setitem__(self, ssn, account):
-        if ssn in self.list_of_account.keys():
-            self.list_of_account[ssn].append(account)
+    def assign_account(self, account, person):
+        person_id = hash(person)
+        if person_id in self.account_dict.keys():
+            self.account_dict[person_id].append(account)
         else:
-            self.list_of_account.update({ssn: [account]})
+            self.account_dict.update({person_id: [account]})
 
-    # def balance(self, account, balance):
-    #     list_of_balances = {}
-    #     if account in self.list_of_account.values():
-    #        if account not in list_of_balances:
-    #            list_of_balances.update({account: balance})
-    #     print(list_of_balances)
+    def inter(self):
+        for accounts in self.account_dict.values():
+            for account in accounts:
+                if isinstance(account, SavingAccount):
+                    account.deposit_after_month()
 
+    def total_money(self, ssn, currency='AMD'):
+        bal = 0
+        ssn_accounts = self.account_dict[hash(ssn)]
+        for ssn_account in ssn_accounts:
+            res = ssn_account.get_balance()
+            bal += ssn_account.convert(res, ssn_account.get_currency(), currency)
 
+        return bal
 
-
-
-
-bank = Bank('converse')
-bank[2345] = '1234-2546'
-bank[7598] = '213-654'
-bank[2345] = '214-564'
-# bank.balance('1234-2546', 1000) # չի աշխատում
-# print(bank.list_of_account)
+account_2 = SavingAccount('id', 'Hayk','AMD', 10)
+account_2.credit(10000)
+account_3 = CurrentAccount('id', 'David','USD', 50000)
+account_3.credit(200)
+acba = Bank()
+acba.assign_account(account_2, Person('John', 1234567))
+acba.assign_account(account_3, Person('John', 1234567))
+acba.inter()
+print(account_2)
+print(account_3)
+print(f'{acba.total_money(1234567)} AMD')

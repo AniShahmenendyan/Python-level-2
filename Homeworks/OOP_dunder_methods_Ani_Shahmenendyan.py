@@ -110,7 +110,7 @@ class Colors:
 
     @g.setter
     def g(self, g):
-        self.__green = self.color_range(g)
+        self.__green = self.color_range()
         raise ValueError
 
     @b.setter
@@ -126,7 +126,7 @@ class Colors:
             return Colors(self.r + other.r, self.g + other.g, self.b + other.b)
 
     def rgb_to_hex(self):
-        return '{:02x}, {:02x}, {:02x}'.format(self.red, self.green, self.blue)
+        return '#{:02x}{:02x}{:02x}'.format(self.r, self.g, self.b)
 
     def __str__(self):
         return f'Red is: {self.red} \nGreen is: {self.green} \nBlue is: {self.blue}'
