@@ -20,10 +20,9 @@ def get_user_by_username(username=None):
 
 def add_new_user(username, password):
     new_user = {}
-    password = hashlib.sha256(password.encode('utf-8')).hexdigest()
     if username not in users:
         new_user.update({'id': len(users) + 1, 'username': 'username', "password": 'password'})
         users.append(new_user)
         return new_user
 
-
+print(users)
