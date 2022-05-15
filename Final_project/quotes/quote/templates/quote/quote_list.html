@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+
+{% block 'title' %} Quotes {% endblock %}
+
+
+
+
+{% block 'content' %}
+
+<br>
+    <div class="container d-flex justify-content-center mt-12" style="width: 70%;">
+
+
+        <div class="col mt-12">
+            <form  method="GET">
+
+                {{ search_form}}
+                <input type="submit" class="btn btn-primary btn-sm" value="Search">
+            </form>
+        </div>
+    </div>
+<tbody
+
+<div class="select2-container--classic">
+
+</div>
+<div class="pagination-container wow zoomIn mar-b-1x" data-wow-duration="0.5s">
+{% if is_paginated %}
+	<ul class="pagination">
+        {% if page_obj.has_previous %}
+		<li class="pagination-item--wide first"> <a class="pagination-link--wide first" href="?page={{ page_obj.previous_page_number }}">Previous</a> </li>
+        {% endif %}
+
+        {% if page_obj.has_next %}
+		<ul class="pagination-item--wide last"> <a class="pagination-link--wide last" href="?page={{ page_obj.next_page_number }}">Next</a> </ul>
+        {% endif %}
+
+	</ul>
+     {% endif %}
+
+</div>
+<br><br><br>
+
+<a class="btn btn-primary" href="{% url 'quote:quote_create' %}">Add new quote</a>
+
+
+<div class="text-center" >
+    <h1>Quotes</h1>
+</div>
+
+
+            {% for q in object_list %}
+
+
+                      <div class="container p-5 my-5 border" style="background-color:lightblue">
+
+                         <p><em> <h4>Quote:<a href="{{q.id}}"> {{q.text}} </a> </h4></em></p><br>
+                          <p><u><h4>Author:<a href="https://en.wikipedia.org/wiki/{{q.author}}"> {{q.author}}</a></h4></u></p><br>
+                          Tags: <span class="border-bottom"></span> {% for tag in q.tag.all|join:", "  %}{{ tag}}{% endfor %}<br>
+
+                      </div>
+                {% endfor %}
+
+                </div>
+
+
+
+</div>
+
+
+
+
+
+</tbody>
+
+{% endblock %}

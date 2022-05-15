@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block 'title' %}Welcome to Quote page.  {% endblock %}}
+
+{% block 'content' %}
+{% url 'quote:quote_update' as update %}
+ <div class="container mt-5" style="width: 70%;">
+        <div class="col">
+            <h1 class="text-center"> Quote Details</h1>
+            <div class="d-flex justify-content-center">
+                <table class="table table-striped mt-5" style="width: 50%">
+                    <thead>
+                    <tr>
+                        <th scope="col"></th>
+                        <th scope="col"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+
+                    <tr>
+                        <td>Text</td>
+                        <td>{{ quote.text }}</td>
+                    </tr>
+                    <tr>
+                        <td>Author</td>
+                        <td>{{ quote.author }}</td>
+                    </tr>
+                    <tr>
+                        <td>Tags</td>
+                        <td>{% for tag in quote.tag.all|join:", "  %} {{ tag}}{% endfor %}</td>
+                    </tr>
+
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="d-flex justify-content-center">
+            <a href="{% url 'quote:quotes' %}"class="d-block btn btn-secondary btn-lg my-5">Back</a>
+
+            <a href="{{quote.id}}/update/"class="d-block btn btn-primary btn-lg my-5"> Update </a>
+            <a href="{{quote.id}}/delete/"class="d-block btn btn-danger btn-lg my-5">Delete </a>
+            </div>
+
+        </div>
+
+    </div>
+                {% endblock %}

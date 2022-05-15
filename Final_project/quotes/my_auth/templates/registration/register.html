@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block 'title' %} Register {% endblock %}}
+
+{% block 'content' %}
+<section class="vh-100" style="background-color: whitesmoke;">
+  <div class="container py-5 h-100">
+    <div class="row d-flex justify-content-center align-items-center h-100" >
+        <div class="col-12 col-md-8 col-lg-6 col-xl-5">
+            <div class="card shadow-2-strong" style="border-radius: 1rem; background-color: #0dcaf0">
+                <div class="card-body p-5 text-center">
+                    <h1 class="text-center">Create new user</h1>
+
+                        <form method="POST" class="form-group">
+                        {% csrf_token %}
+                         <p>  {{ form|crispy}} </p>
+                        <button type="submit" class="btn btn-success">Register</button>
+                         </form>
+                </div>
+            </div>
+        </div>
+    </div>
+   </div>
+</section>
+{% endblock %}
+
+
+
+
+
+
+
+
+
+
+
